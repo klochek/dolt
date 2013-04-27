@@ -54,10 +54,24 @@ class SelectedSparseMatrix1d extends Matrix1d {
   }
 
   /**
-   * Returns the matrix cell value at coordinate [index].
+   * Returns the [double] value in the matrix cell value at coordinate [index].  Behavior when
+   * accessing elements out of bounds of the matrix is undefined.
    */
   double operator[](int index) {
     return _elements[_actualOffset + _offsets[_zero + index * _stride]];
+  }
+
+  /**
+   * Sets the [double] value in the matrix cell value at coordinate [index].  Behavior when
+   * accessing elements out of bounds of the matrix is undefined.
+   */
+  void operator[]=(int index, double value) {
+    int i = _actualOffset + _offsets[_zero + index * _stride];
+    if (value == 0) {
+      _elements.remove(i);
+    } else {
+      _elements[i] = value;
+    }
   }
 
   /**
@@ -94,19 +108,6 @@ class SelectedSparseMatrix1d extends Matrix1d {
   /*Matrix2d like2D(int rows, int columns) {
     return new SparseMatrix2d(rows, columns);
   }*/
-
-  /**
-   * Sets the [double] value in the matrix cell value at coordinate [index].  Behavior when
-   * accessing elements out of bounds of the matrix is undefined.
-   */
-  void operator[]=(int index, double value) {
-    int i = _actualOffset + _offsets[_zero + index * _stride];
-    if (value == 0) {
-      _elements.remove(i);
-    } else {
-      _elements[i] = value;
-    }
-  }
 
   /**
    * Sets up a matrix with a given [size].

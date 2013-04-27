@@ -33,7 +33,7 @@ abstract class Matrix1d {
    * Sets the [double] value in the matrix cell value at coordinate [index].  Behavior when
    * accessing elements out of bounds of the matrix is undefined.
    */
-  double operator[]=(int index, double value);
+  void operator[]=(int index, double value);
 
   /**
    * Construct and returns a new 2-d matrix of the same dynamic type as this matrix, with specified
