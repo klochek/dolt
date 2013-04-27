@@ -390,7 +390,7 @@ abstract class Matrix1d {
   }
 
   /**
-   * Swaps each element <tt>this[i]</tt> with <tt>other[i]</tt>.
+   * Swaps each element this[i] with other[i].
    */
   void swap(Matrix1d other) {
     _checkValidSize(other);

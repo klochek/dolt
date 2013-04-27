@@ -100,7 +100,6 @@ class SparseMatrix1d extends Matrix1d {
    * Returns [true] if both this matrix and [other] share at least one identical cell.
    */
   bool haveSharedCellsRaw(Matrix1d other) {
-    // TODO(klochek): implement SelectedSparseMatrix1d.
     if (other is SelectedSparseMatrix1d) {
       return _elements == other._elements;
     } else if (other is SparseMatrix1d) {
