@@ -1,0 +1,7 @@
+name: dolt
+version: 0.0.1
+author: Chris Klochek <chris.klochek+dolt@gmail.com>
+description: A linear algebra and scientific computing library. Based on Colt.
+homepage: https://github.com/klochek/dolt
+dev_dependencies:
+  unittest: any
