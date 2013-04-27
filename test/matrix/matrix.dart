@@ -20,4 +20,9 @@ void matrixTestAll() {
     var t = new DenseMatrix1dTests();
     t.testAll();
   });
+
+  group('1d Selected Dense Matrix', () {
+    var t = new SelectedDenseMatrix1dTests();
+    t.testAll();
+  });
 }

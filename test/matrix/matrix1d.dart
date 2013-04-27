@@ -56,7 +56,7 @@ class SelectedSparseMatrix1dTests extends Matrix1dTests {
   Matrix1d fromList(List<double> values) {
     // Add some extra cruft to the values we get, and then create a view
     // around them.  It's a little cheesy, but suffices for a first pass.
-      var allValues = [0.0, 42.0, 7.0]
+    var allValues = [0.0, 42.0, 7.0]
         ..addAll(values)
         ..addAll([11.0, -67.3]);
     var offsets = [];
@@ -67,5 +67,20 @@ class SelectedSparseMatrix1dTests extends Matrix1dTests {
       offsets.add(i);
     }
     return new SelectedSparseMatrix1d(values.length, emap, 0, 1, offsets, 3);
+  }
+}
+
+class SelectedDenseMatrix1dTests extends Matrix1dTests {
+  Matrix1d fromList(List<double> values) {
+    // Add some extra cruft to the values we get, and then create a view
+    // around them.  It's a little cheesy, but suffices for a first pass.
+    var allValues = [0.0, 42.0, 7.0]
+        ..addAll(values)
+        ..addAll([11.0, -67.3]);
+    var offsets = [];
+    for (int i = 0; i < allValues.length; i++) {
+      offsets.add(i);
+    }
+    return new SelectedDenseMatrix1d(values.length, allValues, 0, 1, offsets, 3);
   }
 }
