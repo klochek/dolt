@@ -15,4 +15,9 @@ void matrixTestAll() {
     var t = new SelectedSparseMatrix1dTests();
     t.testAll();
   });
+
+  group('1d Dense Matrix', () {
+    var t = new DenseMatrix1dTests();
+    t.testAll();
+  });
 }

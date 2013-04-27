@@ -46,6 +46,12 @@ class SparseMatrix1dTests extends Matrix1dTests {
   }
 }
 
+class DenseMatrix1dTests extends Matrix1dTests {
+  Matrix1d fromList(List<double> values) {
+    return new DenseMatrix1d(values);
+  }
+}
+
 class SelectedSparseMatrix1dTests extends Matrix1dTests {
   Matrix1d fromList(List<double> values) {
     // Add some extra cruft to the values we get, and then create a view
