@@ -4,6 +4,7 @@ import 'package:dolt/dolt.dart';
 import 'package:unittest/unittest.dart';
 
 part 'matrix1d.dart';
+part 'matrix2d.dart';
 
 void matrixTestAll() {
   group('1d Sparse Matrix', () {
@@ -23,6 +24,11 @@ void matrixTestAll() {
 
   group('1d Selected Dense Matrix', () {
     var t = new SelectedDenseMatrix1dTests();
+    t.testAll();
+  });
+
+  group('2d Dense Matrix', () {
+    var t = new DenseMatrix2dTests();
     t.testAll();
   });
 }

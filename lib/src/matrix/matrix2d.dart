@@ -17,7 +17,7 @@ part of dolt;
  * Elements are accessed via zero based indexes
  */
 abstract class Matrix2d {
-  bool _isNoView = true;
+  bool _isView = false;
 
   /**
    * Ensures that this matrix can hold at least the specified number of non-zero (non-null) cells
@@ -31,7 +31,7 @@ abstract class Matrix2d {
    * Returns whether the receiver is a view or not.
    */
   bool get isView {
-    return !_isNoView;
+    return _isView;
   }
 
   /**
@@ -181,7 +181,7 @@ abstract class Matrix2d {
    * Sets up a matrix with a given number of [rows] and [columns].
    */
   void _setUp(int rows, int columns) {
-    _setUp(rows, columns, 0, 0, columns, 1);
+    _setUpWithParams(rows, columns, 0, 0, columns, 1);
   }
 
   /**
@@ -201,7 +201,7 @@ abstract class Matrix2d {
     _rowStride = rowStride;
     _columnStride = columnStride;
 
-    _isNoView = true;
+    _isView = false;
 
     // TODO(klochek): Do we even want this, anymore?
     if (columns * rows > 4000000000) {
@@ -231,7 +231,7 @@ abstract class Matrix2d {
     if (_columns > 0) {
       _columnZero += (_columns - 1) * _columnStride;
       _columnStride = -_columnStride;
-      _isNoView = false;
+      _isView = true;
     }
   }
 
@@ -253,7 +253,7 @@ abstract class Matrix2d {
     _rowZero = _columnZero;
     _columnZero = tmp;
 
-    _isNoView = false;
+    _isView = true;
   }
 
   /**
@@ -267,7 +267,7 @@ abstract class Matrix2d {
     _rows = height;
     _columns = width;
 
-    _isNoView = false;
+    _isView = true;
   }
 
   /**
@@ -277,7 +277,7 @@ abstract class Matrix2d {
     if (_rows > 0) {
       _rowZero += (_rows - 1) * _rowStride;
       _rowStride = -_rowStride;
-      _isNoView = false;
+      _isView = true;
     }
   }
 
@@ -296,7 +296,7 @@ abstract class Matrix2d {
     if (_columns != 0) {
       _columns = ((_columns - 1) / columnStride + 1).floor();
     }
-    _isNoView = false;
+    _isView = true;
   }
 
 
@@ -531,7 +531,7 @@ abstract class Matrix2d {
   /**
    * Returns [true] if both matrices share at least one identical cell.
    */
-   bool haveSharedCellsRaw(Matrix2d other) {
+  bool haveSharedCellsRaw(Matrix2d other) {
     return false;
   }
 
@@ -723,7 +723,7 @@ abstract class Matrix2d {
   }
 
   /**
-   * Construct and returns a new selection view.
+   * Returns a new selection view.
    */
   Matrix2d viewSelectionLike(List<int> rowOffsets, List<int> columnOffsets);
 
@@ -848,7 +848,7 @@ abstract class Matrix2d {
    * result is returned.
    */
   Matrix2d mul2d(Matrix2d b, Matrix2d result) {
-    return mul2dWithParams(b, result, 1, (result == null ? 1 : 0), false, false);
+    return mul2dWithParams(b, result, 1.0, (result == null ? 1.0 : 0.0), false, false);
   }
 
   /**
