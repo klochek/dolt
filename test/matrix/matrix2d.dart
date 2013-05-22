@@ -29,3 +29,11 @@ class DenseMatrix2dTests extends Matrix2dTests {
     return r;
   }
 }
+
+class SelectedDenseMatrix2dTests extends Matrix2dTests {
+  Matrix2d fromList(List<List<double>> values) {
+    var r = new SelectedDenseMatrix2d();
+
+    return r;
+  }
+}

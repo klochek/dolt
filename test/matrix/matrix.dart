@@ -31,4 +31,10 @@ void matrixTestAll() {
     var t = new DenseMatrix2dTests();
     t.testAll();
   });
+
+  group('2d Selected Dense Matrix', () {
+    var t = new DenseMatrix2dTests();
+    t.testAll();
+  });
+
 }
