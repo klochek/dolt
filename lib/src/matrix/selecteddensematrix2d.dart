@@ -102,7 +102,7 @@ class SelectedDenseMatrix2d extends Matrix2d {
    * Construct and returns a new empty matrix of the same dynamic type as this matrix, having the
    * same number of rows and columns.
    */
-  Matrix2d like(int rows, int columns) {
+  Matrix2d likeWithDimensions(int rows, int columns) {
     return new DenseMatrix2d(rows, columns);
   }
 
