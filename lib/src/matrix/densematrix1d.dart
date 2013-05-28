@@ -127,7 +127,7 @@ class DenseMatrix1d extends Matrix1d {
   assignWithFunc(Matrix1d y, function(double x, double y)) {
     // overriden for performance only
     if (y is! DenseMatrix1d) {
-      super.assign(y, function);
+      super.assignWithFunc(y, function);
       return;
     }
     DenseMatrix1d other = y;

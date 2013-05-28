@@ -238,7 +238,7 @@ class DenseMatrix2d extends Matrix2d {
    * specified [size], [zero], and [stride].
    */
   Matrix1d like1dWithDimensions(int size, int zero, int stride) {
-    return new DenseMatrix1d(size, _elements, zero, stride);
+    return new DenseMatrix1d.withParams(size, _elements, zero, stride);
   }
 
   /**

@@ -662,7 +662,7 @@ abstract class Matrix2d {
     int viewSize = _columns;
     int viewZero = index(row, 0);
     int viewStride = _columnStride;
-    return like1d(viewSize, viewZero, viewStride);
+    return like1dWithDimensions(viewSize, viewZero, viewStride);
   }
 
   /**

@@ -37,3 +37,10 @@ class SelectedDenseMatrix2dTests extends Matrix2dTests {
     return r;
   }
 }
+
+class SparseMatrix2dTests extends Matrix2dTests {
+  Matrix2d fromList(List<List<double>> values) {
+    var r = new SparseMatrix2d(values);
+    return r;
+  }
+}

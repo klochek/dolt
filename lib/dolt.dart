@@ -10,3 +10,4 @@ part 'src/matrix/selecteddensematrix1d.dart';
 part 'src/matrix/selecteddensematrix2d.dart';
 part 'src/matrix/selectedsparsematrix1d.dart';
 part 'src/matrix/sparsematrix1d.dart';
+part 'src/matrix/sparsematrix2d.dart';

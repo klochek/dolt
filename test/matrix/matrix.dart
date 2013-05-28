@@ -37,4 +37,8 @@ void matrixTestAll() {
     t.testAll();
   });
 
+  group('2d Selected Sparse Matrix', () {
+    var t = new SparseMatrix2dTests();
+    t.testAll();
+  });
 }
