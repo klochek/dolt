@@ -33,12 +33,17 @@ void matrixTestAll() {
   });
 
   group('2d Selected Dense Matrix', () {
-    var t = new DenseMatrix2dTests();
+    var t = new SelectedDenseMatrix2dTests();
+    t.testAll();
+  });
+
+  group('2d Sparse Matrix', () {
+    var t = new SparseMatrix2dTests();
     t.testAll();
   });
 
   group('2d Selected Sparse Matrix', () {
-    var t = new SparseMatrix2dTests();
+    var t = new SelectedSparseMatrix2dTests();
     t.testAll();
   });
 }

@@ -32,8 +32,13 @@ class DenseMatrix2dTests extends Matrix2dTests {
 
 class SelectedDenseMatrix2dTests extends Matrix2dTests {
   Matrix2d fromList(List<List<double>> values) {
-    var r = new SelectedDenseMatrix2d();
-
+    var flatVals = [];
+    for (int i = 0; i < values.length; i++) {
+      for (int j = 0; j < values[i].length; j++) {
+        flatVals.add(values[i][j]);
+      }
+    }
+    var r = new SelectedDenseMatrix2d(flatVals, [0, 2], [0, 1], 0);
     return r;
   }
 }
@@ -41,6 +46,19 @@ class SelectedDenseMatrix2dTests extends Matrix2dTests {
 class SparseMatrix2dTests extends Matrix2dTests {
   Matrix2d fromList(List<List<double>> values) {
     var r = new SparseMatrix2d(values);
+    return r;
+  }
+}
+
+class SelectedSparseMatrix2dTests extends Matrix2dTests {
+  Matrix2d fromList(List<List<double>> values) {
+    var flatVals = new Map<int, double>();
+    for (int i = 0; i < values.length; i++) {
+      for (int j = 0; j < values[i].length; j++) {
+        flatVals[i * values[i].length + j] = values[i][j];
+      }
+    }
+    var r = new SelectedSparseMatrix2d(flatVals, [0, 2], [0, 1], 0);
     return r;
   }
 }

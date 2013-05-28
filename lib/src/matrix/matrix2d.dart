@@ -869,7 +869,7 @@ abstract class Matrix2d {
 
     if (result == null) {
       // TODO(klochek): This looks funny--shouldn't this be a 'like'?
-      result = new DenseMatrix2d(m, p);
+      result = new DenseMatrix2d.withDimensions(m, p);
     }
     if (b._rows != n) {
       throw new ArgumentError('Matrix2D inner dimensions must agree:${toStringShort()}' +
@@ -885,7 +885,7 @@ abstract class Matrix2d {
 
     for (int j = p - 1; j >= 0; j--) {
       for (int i = m - 1; i >= 0; i--) {
-        double s = 0;
+        double s = 0.0;
         for (int k = n - 1; k >= 0; k--) {
           s += get(i, k) * b.get(k, j);
         }

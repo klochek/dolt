@@ -13,11 +13,11 @@ part of dolt;
 
 
 /**
- * Selection view on dense 2-d matrices.
+ * Selection view on sparse 2-d matrices holding double elements.
  */
-class SelectedDenseMatrix2d extends Matrix2d {
-  /// The elements of this matrix.
-  List<double> _elements;
+class SelectedSparseMatrix2d extends Matrix2d {
+  /// The elements of the matrix.
+  Map<int, double> elements;
 
   /// The row offsets of the visible cells of this matrix.
   List<int> _rowOffsets;
@@ -25,26 +25,17 @@ class SelectedDenseMatrix2d extends Matrix2d {
   /// The column offsets of the visible cells of this matrix.
   List<int> _columnOffsets;
 
-  /// The offset.
   int _offset;
 
   /**
    * Constructs a matrix view with the given parameters.
    */
-  SelectedDenseMatrix2d(List<double> elements, List<int> rowOffsets, List<int> columnOffsets,
-      int offset)
-      : this._view(rowOffsets.length, columnOffsets.length, elements, 0, 0, 1, 1, rowOffsets,
-          columnOffsets, offset);
-
-  /**
-   * Constructs a matrix view with the given parameters.
-   */
-  SelectedDenseMatrix2d._view(int rows, int columns, List<double> elements, int rowZero,
+  SelectedSparseMatrix2d.withParams(int rows, int columns, Map<int, double> elements, int rowZero,
       int columnZero, int rowStride, int columnStride, List<int> rowOffsets,
       List<int> columnOffsets, int offset) {
     _setUpWithParams(rows, columns, rowZero, columnZero, rowStride, columnStride);
 
-    _elements = elements;
+    this.elements = elements;
     _rowOffsets = rowOffsets;
     _columnOffsets = columnOffsets;
     _offset = offset;
@@ -53,40 +44,45 @@ class SelectedDenseMatrix2d extends Matrix2d {
   }
 
   /**
-   * Returns the [int] position of the given absolute rank within the (virtual or non-virtual)
-   * internal 1-dimensional array.
+   * Constructs a matrix view with the given parameters.
+   */
+  SelectedSparseMatrix2d(Map<int, double> elements, List<int> rowOffsets, List<int> columnOffsets,
+      int offset) :
+        this.withParams(rowOffsets.length, columnOffsets.length, elements, 0, 0, 1, 1, rowOffsets,
+            columnOffsets, offset);
+
+  /**
+   * Returns the position of the given absolute rank within the (virtual or non-virtual) internal
+   * 1-dimensional array.
    */
   int _columnOffset(int absRank) {
     return _columnOffsets[absRank];
   }
 
   /**
-   * Returns the [int] position of the given absolute rank within the (virtual or non-virtual)
-   * internal 1-dimensional array.
+   * Returns the position of the given absolute rank within the (virtual or non-virtual) internal
+   * 1-dimensional array.
    */
   int _rowOffset(int absRank) {
     return _rowOffsets[absRank];
   }
 
   /**
-   * Returns the [double] value in the matrix cell value at [row] and [column].  Behavior when
-   * accessing elements out of bounds of the matrix is undefined.
+   * Returns the matrix cell value at coordinate [row, column].
    */
   double get(int row, int column) {
-    int o1 = _rowOffsets[_rowZero + row * _rowStride];
-    int o2 = _columnOffsets[_columnZero + column * _columnStride];
-    return _elements[_offset +  o1 +
-        o2];
+    return elements[_offset + _rowOffsets[_rowZero + row * _rowStride] +
+        _columnOffsets[_columnZero + column * _columnStride]];
   }
 
   /**
-   * Returns [true] if both matrices share at least one identical cell.
+   * Returns [true] if both matrices share common cells.  More formally, returns [true] if at least
+   * one of the following conditions is met: the receiver is a view of the other matrix; the other
+   * matrix is a view of the receiver; this == other.
    */
   bool haveSharedCellsRaw(Matrix2d other) {
-    if (other is SelectedDenseMatrix2d) {
-      return _elements == other._elements;
-    } else if (other is DenseMatrix2d) {
-      return _elements == other._elements;
+    if (other is SelectedSparseMatrix2d || other is SparseMatrix2d) {
+      return elements == other.elements;
     }
     return false;
   }
@@ -101,41 +97,45 @@ class SelectedDenseMatrix2d extends Matrix2d {
   }
 
   /**
-   * Construct and returns a new empty matrix of the same dynamic type as this matrix, having the
-   * same number of rows and columns.
+   * Construct and returns a new empty matrix of the same dynamic type as the receiver, having the
+   * specified number of rows and columns.
    */
   Matrix2d likeWithDimensions(int rows, int columns) {
-    return new DenseMatrix2d(rows, columns);
+    return new SparseMatrix2d(rows, columns);
   }
 
   /**
-   * Construct and returns a new 1-d matrix of the corresponding dynamic type of this matrix, with
-   * the specified [size].
+   * Construct and returns a new 1-d matrix of the corresponding dynamic type, entirelly independent
+   * of the receiver.
    */
   Matrix1d like1d(int size) {
-    return new DenseMatrix1d(size);
+    return new SparseMatrix1d(size);
   }
 
   /**
-   * Construct and returns a new 1-d matrix of the corresponding dynamic type of this matrix, with
-   * specified [size], [zero], and [stride].
+   * Construct and returns a new 1-d matrix of the corresponding dynamic type, sharing the same
+   * cells.
    */
-  Matrix1d like1dWithDimensions(int size, int zero, int stride) {
-    // TODO(klochek): This used to be protected; refactor so that a client cannot call this.
-    throw 'Internal error'; // this method is never called since viewRow() and viewColumn are overridden properly.
+  Matrix1d like1dWithParams(int size, int zero, int stride) {
+    throw 'This should not happen';
   }
 
   /**
-   * Sets the matrix cell at coordinate [row] [column] to the specified [value].  Behavior when
-   * accessing elements out of bounds of the matrix is undefined.
+   * Sets the matrix cell at coordinate [row,column] to the specified value.
    */
   void set(int row, int column, double value) {
-    _elements[_offset + _rowOffsets[_rowZero + row * _rowStride] +
-        _columnOffsets[_columnZero + column * _columnStride]] = value;
+    int index = _offset + _rowOffsets[_rowZero + row * _rowStride] +
+        _columnOffsets[_columnZero + column * _columnStride];
+
+    if (value == 0) {
+      elements.remove(index);
+    } else {
+      elements[index] = value;
+    }
   }
 
   /**
-   * Sets up a matrix with a given number of [rows] and [columns].
+   * Sets up a matrix with a given number of rows and columns.
    */
   void _setUp(int rows, int columns) {
     super._setUp(rows, columns);
@@ -145,13 +145,15 @@ class SelectedDenseMatrix2d extends Matrix2d {
   }
 
   /**
-   * Self modifying version of viewTranspose().
+   * Self modifying version of [viewTranspose].
    */
   void vTranspose() {
     super.vTranspose();
+
     List<int> tmp = _rowOffsets;
     _rowOffsets = _columnOffsets;
     _columnOffsets = tmp;
+
     _isView = true;
   }
 
@@ -159,16 +161,16 @@ class SelectedDenseMatrix2d extends Matrix2d {
    * Constructs and returns a new slice view representing the rows of the given column.  The
    * returned view is backed by this matrix, so changes in the returned view are reflected in this
    * matrix, and vice-versa.  To obtain a slice view on subranges, construct a sub-ranging view
-   * via [viewPart], then apply this method to the sub-range view.
+   * ([viewPart(...)]), then apply this method to the sub-range view.
    */
   Matrix1d viewColumn(int column) {
-    _checkValidColumn(column);
+    checkColumn(column);
     int viewSize = _rows;
     int viewZero = _rowZero;
     int viewStride = _rowStride;
     List<int> viewOffsets = _rowOffsets;
     int viewOffset = _offset + _columnOffset(_columnRank(column));
-    return new SelectedDenseMatrix1d(viewSize, _elements, viewZero, viewStride, viewOffsets,
+    return new SelectedSparseMatrix1d(viewSize, elements, viewZero, viewStride, viewOffsets,
         viewOffset);
   }
 
@@ -176,23 +178,23 @@ class SelectedDenseMatrix2d extends Matrix2d {
    * Constructs and returns a new slice view representing the columns of the given row.  The
    * returned view is backed by this matrix, so changes in the returned view are reflected in this
    * matrix, and vice-versa.  To obtain a slice view on subranges, construct a sub-ranging view
-   * via [viewPart], then apply this method to the sub-range view.
+   * ([viewPart(...)]), then apply this method to the sub-range view.
    */
   Matrix1d viewRow(int row) {
-    _checkValidRow(row);
+    checkRow(row);
     int viewSize = _columns;
     int viewZero = _columnZero;
     int viewStride = _columnStride;
     List<int> viewOffsets = _columnOffsets;
     int viewOffset = _offset + _rowOffset(_rowRank(row));
-    return new SelectedDenseMatrix1d(viewSize, _elements, viewZero, viewStride, viewOffsets,
+    return new SelectedSparseMatrix1d(viewSize, elements, viewZero, viewStride, viewOffsets,
         viewOffset);
   }
 
   /**
-   * Returns a new selection view.
+   * Construct and returns a new selection view.
    */
   Matrix2d viewSelectionLike(List<int> rowOffsets, List<int> columnOffsets) {
-    return new SelectedDenseMatrix2d(_elements, _rowOffsets, _columnOffsets, _offset);
+    return new SelectedSparseMatrix2d(elements, rowOffsets, columnOffsets, _offset);
   }
 }
